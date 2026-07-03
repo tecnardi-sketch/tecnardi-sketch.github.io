@@ -352,6 +352,16 @@ body {
   line-height: 1.65;
 }
 
+.arcade-page {
+  background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('../images/plano\ de\ fundo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.arcade-page.content-page {
+  border: 1px solid var(--border);
+}
 
 .hidden {
   display: none;
