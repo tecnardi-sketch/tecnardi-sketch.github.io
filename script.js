@@ -21,28 +21,6 @@ const modules = {
       }
     ]
   },
-  informatica: {
-    title: 'Informática',
-    description: 'Hardware, manutenção, montagem de PCs e diagnóstico de problemas reais.',
-    page: 'pages/informatica.html',
-    items: [
-      {
-        title: 'Montagem de PC básico',
-        summary: 'Veja como escolher peças, montar e testar um computador do zero.',
-        details: '<p>Conteúdo com vídeo, passo a passo e checklist para montar um PC funcional.</p><ul><li>Escolha de CPU, placa-mãe e memória</li><li>Instalação de cooler e cabos</li><li>Teste inicial e BIOS</li></ul>'
-      },
-      {
-        title: 'Diagnóstico de falhas de hardware',
-        summary: 'Identifique problemas comuns e resolva falhas em computadores com precisão.',
-        details: '<p>Aprenda a reconhecer sinais de defeito e usar ferramentas de diagnóstico.</p><ul><li>Erros de boot</li><li>Sintomas de fonte e placa-mãe</li><li>Testes práticos</li></ul>'
-      },
-      {
-        title: 'Atualização e manutenção de notebooks',
-        summary: 'Limpeza, troca de SSD/RAM e dicas para melhorar performance de notebooks.',
-        details: '<p>Guia passo a passo para manter notebooks funcionando bem por mais tempo.</p><ul><li>Como abrir e limpar</li><li>Troca de componentes</li><li>Melhorias de performance</li></ul>'
-      }
-    ]
-  },
   arcade: {
     title: 'Arcade',
     description: 'Instalação de sistemas multijogos e personalização de controles.',
