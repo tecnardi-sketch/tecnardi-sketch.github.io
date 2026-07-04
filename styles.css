@@ -353,7 +353,7 @@ body {
 }
 
 .arcade-page {
-  background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('../images/plano\ de\ fundo.jpg');
+  background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('../images/arcade-bg.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
