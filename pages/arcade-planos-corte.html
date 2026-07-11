@@ -17,30 +17,129 @@
         <h1>Planos de Corte</h1>
         <p class="lead">Arquivos de corte e referências visuais para a montagem do fliperama.</p>
 
-        <section style="margin: 24px 0 32px; padding: 20px; border: 1px solid #e1e1e1; border-radius: 16px; background: #fafafa;">
+        <section>
           <p>É necessário usar o software Sketchup para visualizar os arquivos e medidas.</p>
           <p>O plano de corte é baseado na Eletromatic, porém com leves mudanças.</p>
           <p>Link para download: <a href="https://www.4shared.com/account/home.jsp#dir=M83DjPzC" target="_blank" rel="noopener noreferrer">https://www.4shared.com/account/home.jsp#dir=M83DjPzC</a></p>
-
-          <div style="display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); margin-top: 18px;">
-            <figure style="margin:0;">
-              <img src="../images/01-PE%C3%A7AS.png" alt="01 - PEÇAS" style="width:100%; border-radius:12px; display:block;">
-              <figcaption style="margin-top:8px; font-size:0.95rem;">01 - PEÇAS</figcaption>
-            </figure>
-            <figure style="margin:0;">
-              <img src="../images/02-PAINEL%20COMANDOS.png" alt="02 - PAINEL COMANDOS" style="width:100%; border-radius:12px; display:block;">
-              <figcaption style="margin-top:8px; font-size:0.95rem;">02 - PAINEL COMANDOS</figcaption>
-            </figure>
-            <figure style="margin:0;">
-              <img src="../images/03-MAQUINA%20MONTADA.png" alt="03 - MÁQUINA MONTADA" style="width:100%; border-radius:12px; display:block;">
-              <figcaption style="margin-top:8px; font-size:0.95rem;">03 - MÁQUINA MONTADA</figcaption>
-            </figure>
-          </div>
         </section>
+
+        <section class="media-gallery" id="mediaGallery">
+          <figure data-src="../images/01-PE%C3%A7AS.png" data-type="image">
+            <img src="../images/01-PE%C3%A7AS.png" alt="01 - PEÇAS">
+            <figcaption>01 - PEÇAS</figcaption>
+          </figure>
+
+          <figure data-src="../images/02-PAINEL%20COMANDOS.png" data-type="image">
+            <img src="../images/02-PAINEL%20COMANDOS.png" alt="02 - PAINEL COMANDOS">
+            <figcaption>02 - PAINEL COMANDOS</figcaption>
+          </figure>
+
+          <figure data-src="../images/03-MAQUINA%20MONTADA.png" data-type="image">
+            <img src="../images/03-MAQUINA%20MONTADA.png" alt="03 - MÁQUINA MONTADA">
+            <figcaption>03 - MÁQUINA MONTADA</figcaption>
+          </figure>
+        </section>
+
+        <div id="lightbox" class="lightbox hidden" aria-hidden="true">
+          <div class="lb-toolbar">
+            <span id="lbIndex">0 / 0</span>
+            <div class="lb-actions"><button id="lbDownload" title="Download" disabled>Download</button></div>
+          </div>
+          <button class="lb-close" aria-label="Fechar">×</button>
+          <button class="lb-prev" aria-label="Anterior">‹</button>
+          <div class="lb-content" id="lbContent" role="dialog" aria-modal="true"></div>
+          <button class="lb-next" aria-label="Próximo">›</button>
+          <div class="lb-caption" id="lbCaption"></div>
+        </div>
 
         <a class="button button-secondary" href="arcade.html">Voltar ao módulo Arcade</a>
       </article>
     </main>
+
+    <script>
+      (function () {
+        const figs = Array.from(document.querySelectorAll('.media-gallery figure'));
+        const lightbox = document.getElementById('lightbox');
+        const lbContent = document.getElementById('lbContent');
+        const lbCaption = document.getElementById('lbCaption');
+        const lbIndex = document.getElementById('lbIndex');
+        const btnDownload = document.getElementById('lbDownload');
+        const btnClose = lightbox.querySelector('.lb-close');
+        const btnPrev = lightbox.querySelector('.lb-prev');
+        const btnNext = lightbox.querySelector('.lb-next');
+        let idx = 0;
+
+        document.querySelectorAll('.media-gallery img').forEach((img) => {
+          img.loading = 'lazy';
+          img.decoding = 'async';
+        });
+
+        function updateUi() {
+          lbIndex.textContent = `${idx + 1} / ${figs.length}`;
+          const fig = figs[idx];
+          const src = fig.getAttribute('data-src');
+          const caption = fig.querySelector('figcaption').textContent;
+          lbCaption.textContent = caption;
+          btnDownload.disabled = false;
+          btnDownload.onclick = () => {
+            const a = document.createElement('a');
+            a.href = src;
+            a.download = src.split('/').pop();
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          };
+          lbContent.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = caption;
+          lbContent.appendChild(img);
+        }
+
+        function openLightbox(i) {
+          idx = i;
+          updateUi();
+          lightbox.classList.remove('hidden');
+          lightbox.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeLightbox() {
+          lightbox.classList.add('hidden');
+          lightbox.setAttribute('aria-hidden', 'true');
+        }
+
+        figs.forEach((fig, i) => {
+          fig.addEventListener('click', () => openLightbox(i));
+        });
+
+        btnClose.addEventListener('click', closeLightbox);
+        btnPrev.addEventListener('click', () => {
+          idx = (idx - 1 + figs.length) % figs.length;
+          updateUi();
+        });
+        btnNext.addEventListener('click', () => {
+          idx = (idx + 1) % figs.length;
+          updateUi();
+        });
+
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (lightbox.classList.contains('hidden')) return;
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowRight') {
+            idx = (idx + 1) % figs.length;
+            updateUi();
+          }
+          if (e.key === 'ArrowLeft') {
+            idx = (idx - 1 + figs.length) % figs.length;
+            updateUi();
+          }
+        });
+      })();
+    </script>
     <footer class="site-footer"><p>TecNardi &copy; 2026</p></footer>
   </div>
 </body>
