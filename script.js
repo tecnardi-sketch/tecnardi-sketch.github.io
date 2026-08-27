@@ -1,44 +1,31 @@
 ﻿(function () {
-  const PAGE_KEY = 'tecnardi_visit_' + (location.pathname || 'index.html');
-
-  function getCount() {
-    try {
-      const raw = localStorage.getItem(PAGE_KEY);
-      const parsed = Number(raw || 0);
-      return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
-    } catch (error) {
-      return 0;
-    }
-  }
-
-  function setCount(value) {
-    try {
-      localStorage.setItem(PAGE_KEY, String(value));
-    } catch (error) {
-      // Ignora falhas de armazenamento em navegadores restritivos.
-    }
-  }
-
-  const nextCount = getCount() + 1;
-  setCount(nextCount);
-
   const footer = document.querySelector('.site-footer');
   if (!footer) {
     return;
   }
 
-  let counter = footer.querySelector('.visit-counter');
-  if (!counter) {
-    counter = document.createElement('div');
-    counter.className = 'visit-counter';
-    counter.setAttribute('aria-live', 'polite');
-    counter.innerHTML = 'Acessos: <strong>' + nextCount.toLocaleString('pt-BR') + '</strong>';
-    footer.appendChild(counter);
-    return;
-  }
+  const pageName = (location.pathname || '/index.html').replace(/\/+$/, '') || '/index.html';
+  const pageKey = pageName === '/index.html' ? 'index.html' : pageName.replace(/^\//, '');
+  const counter = document.createElement('div');
+  counter.className = 'visit-counter';
+  counter.setAttribute('aria-live', 'polite');
+  counter.textContent = 'Acessos: carregando...';
+  footer.appendChild(counter);
 
-  const strong = counter.querySelector('strong');
-  if (strong) {
-    strong.textContent = nextCount.toLocaleString('pt-BR');
-  }
+  const endpoint = 'https://api.countapi.xyz/hit/' + encodeURIComponent('tecnardi-sketch.github.io') + '/' + encodeURIComponent(pageKey) + '?strict=false';
+
+  fetch(endpoint)
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error('Erro no contador');
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      const total = Number(data && data.value ? data.value : 0);
+      counter.innerHTML = 'Acessos: <strong>' + total.toLocaleString('pt-BR') + '</strong>';
+    })
+    .catch(function () {
+      counter.innerHTML = 'Acessos: <strong>0</strong>';
+    });
 })();
