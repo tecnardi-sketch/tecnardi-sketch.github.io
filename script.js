@@ -6,26 +6,32 @@
 
   const pageName = (location.pathname || '/index.html').replace(/\/+$/, '') || '/index.html';
   const pageKey = pageName === '/index.html' ? 'index.html' : pageName.replace(/^\//, '');
-  const counter = document.createElement('div');
+  const storageKey = 'tecnardi_visit_' + pageKey;
+
+  function readCount() {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      const value = Number(raw || 0);
+      return Number.isFinite(value) && value >= 0 ? value : 0;
+    } catch (error) {
+      return 0;
+    }
+  }
+
+  function writeCount(value) {
+    try {
+      localStorage.setItem(storageKey, String(value));
+    } catch (error) {
+      // Ignora falhas de armazenamento em navegadores restritivos.
+    }
+  }
+
+  const counter = footer.querySelector('.visit-counter') || document.createElement('div');
   counter.className = 'visit-counter';
   counter.setAttribute('aria-live', 'polite');
-  counter.textContent = 'Acessos: carregando...';
   footer.appendChild(counter);
 
-  const endpoint = 'https://api.countapi.xyz/hit/' + encodeURIComponent('tecnardi-sketch.github.io') + '/' + encodeURIComponent(pageKey) + '?strict=false';
-
-  fetch(endpoint)
-    .then(function (response) {
-      if (!response.ok) {
-        throw new Error('Erro no contador');
-      }
-      return response.json();
-    })
-    .then(function (data) {
-      const total = Number(data && data.value ? data.value : 0);
-      counter.innerHTML = 'Acessos: <strong>' + total.toLocaleString('pt-BR') + '</strong>';
-    })
-    .catch(function () {
-      counter.innerHTML = 'Acessos: <strong>0</strong>';
-    });
+  const nextCount = readCount() + 1;
+  writeCount(nextCount);
+  counter.innerHTML = 'Acessos: <strong>' + nextCount.toLocaleString('pt-BR') + '</strong>';
 })();
