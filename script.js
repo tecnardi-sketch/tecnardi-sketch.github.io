@@ -4,9 +4,12 @@
     return;
   }
 
-  const pageName = (location.pathname || '/index.html').replace(/\/+$/, '') || '/index.html';
-  const pageKey = pageName === '/index.html' ? 'index.html' : pageName.replace(/^\//, '');
-  const storageKey = 'tecnardi_visit_' + pageKey;
+  const storageKey = 'tecnardi_total_accesses';
+  const digitCount = 9;
+
+  function formatCount(value) {
+    return String(value).padStart(digitCount, '0');
+  }
 
   function readCount() {
     try {
@@ -33,5 +36,5 @@
 
   const nextCount = readCount() + 1;
   writeCount(nextCount);
-  counter.innerHTML = 'Acessos: <strong>' + nextCount.toLocaleString('pt-BR') + '</strong>';
+  counter.innerHTML = 'Acessos: <strong>' + formatCount(nextCount) + '</strong>';
 })();
